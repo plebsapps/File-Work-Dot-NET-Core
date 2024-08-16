@@ -14,9 +14,15 @@ namespace FileWork
                 int lines = File.ReadAllLines(path).Length;    
 
                 File.AppendAllText(path, $"\n{++lines}: Neue Zeile?");
-                File.CreateSymbolicLink("TestLink.txt", path);   
+                
+                if (! File.Exists("TestLink.txt")) 
+                {
+                    File.CreateSymbolicLink("TestLink.txt", path);
+                    //File.Delete("TestLink.txt");
+                } 
+                
 
-            } 
+            }
             else 
             {
                 FileStream fs = File.Create("test.txt");
