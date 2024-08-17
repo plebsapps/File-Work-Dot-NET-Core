@@ -4,6 +4,8 @@ using System.IO;
 using System.Text;
 using NPOI.XSSF.UserModel;  // Für das .xlsx-Format
 using NPOI.SS.UserModel;   // Gemeinsame Schnittstellen für xls und xlsx
+using ClosedXML.Excel;     // Für das .xlsx-Format
+
 
 namespace FileWork
 {
@@ -18,16 +20,35 @@ namespace FileWork
             //CheckIfPathExists();
             //OpenExplorer(Environment.CurrentDirectory);
             //ReadWriteFile();
-            //WriteXlSX();
-            //ReadXlSX();
-
-
+            //CreateExcelFileWithNPOI($"{Environment.CurrentDirectory}\\Datei.xlsx");
+            //ReadExcelFileWithNPOI($"{Environment.CurrentDirectory}\\Datei.xlsx");
+            //ReadExcelFileWithClosedXML($"{Environment.CurrentDirectory}\\Datei.xlsx");
         }
 
 
 
+        public static void ReadExcelFileWithClosedXML(string filePath)
+        {
+            Console.WriteLine();
 
+            using (var workbook = new XLWorkbook(filePath)) //using stellt sicher das die Datei nach dem Verlassen des Blocks geschlossen wird
+            {
+                var worksheet = workbook.Worksheets.First(); // Nimmt das erste Arbeitsblatt
+                              
+                for (int rowNumber = 1; rowNumber <= worksheet.LastRowUsed().RowNumber(); rowNumber++)
+                {
+                    var row = worksheet.Row(rowNumber);
+                    int lastColumn = row.LastCellUsed().Address.ColumnNumber; // Letzte Spalte mit einem Wert
 
+                    for (int colNumber = 1; colNumber <= lastColumn; colNumber++)
+                    {
+                        var cellValue = row.Cell(colNumber).Value.ToString();
+                        Console.Write($"{cellValue.PadRight(20)}|");
+                    }
+                    Console.WriteLine();
+                }            
+            }
+        }
 
         static void PrintAllEnvironmentPaths()
         {
@@ -159,11 +180,9 @@ namespace FileWork
             OpenExplorer(path);
         }
 
-        static void WriteXlSX()
+        static void CreateExcelFileWithNPOI(string filePath)
         {
             Console.WriteLine();
-
-            string filePath = $"{Environment.CurrentDirectory}\\Datei.xlsx";
 
             if (File.Exists(filePath))
             {
@@ -194,12 +213,9 @@ namespace FileWork
             Console.WriteLine("Excel-Datei erfolgreich erstellt!");
         }
 
-        static void ReadXlSX()
+        static void ReadExcelFileWithNPOI(string filePath)
         {
-            string filePath = $"{Environment.CurrentDirectory}\\Datei.xlsx";
-
-            Console.WriteLine();
-            Console.WriteLine("Lese Excel-Datei");
+            Console.WriteLine();            
 
             using (FileStream file = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
@@ -214,7 +230,7 @@ namespace FileWork
                         for (int col = 0; col < currentRow.LastCellNum; col++) // Spalten durchlaufen
                         {
                             ICell cell = currentRow.GetCell(col);
-                            Console.Write(cell?.ToString() + "\t");
+                            Console.Write(cell?.ToString().PadRight(20) + "|");
                         }
                         Console.WriteLine();
                     }

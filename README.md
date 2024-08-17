@@ -24,29 +24,37 @@ This is a simple program that interacts with the file system using .NET Core 8.x
 
 ## Excel File
 Um eine .xlsx-Datei (das neuere Excel-Format) in C# zu lesen und zu schreiben, 
-können Sie die NPOI-Bibliothek verwenden, die neben .xls auch das .xlsx-Format unterstützt.
+können Sie die NPOI-Bibliothek oder die ClosedXML verwenden, die neben .xls auch das .xlsx-Format unterstützt.
 
-Um die NPOI-Bibliothek in einem .NET-Projekt zu installieren, können Sie den **NuGet Package Manager** in Visual Studio 
-oder die .NET CLI verwenden. 
+- Um die ClosedXML-Bibliothek in einem .NET-Projekt zu installieren, können Sie den **NuGet Package Manager** 	
+in Visual Studio oder die .NET CLI verwenden oder in *.csproj Datei 
+<PackageReference Include="ClosedXML" Version="0.97.0" /> hinzufügen.
+    
+- Um die NPOI-Bibliothek in einem .NET-Projekt zu installieren, können Sie den **NuGet Package Manager** 
+in Visual Studio oder die .NET CLI verwenden oder in *.csproj Datei 
+<PackageReference Include="NPOI" Version="2.7.1" /> hinzufügen.
 
 ### Installation über den NuGet Package Manager in Visual Studio
-Falls Sie Visual Studio verwenden, können Sie das NPOI-Paket folgendermaßen hinzufügen:
+Falls Sie Visual Studio verwenden, können Sie das Paket folgendermaßen hinzufügen:
 
 1. Projekt öffnen: Öffnen Sie Ihr Projekt in Visual Studio.
 2. NuGet Package Manager öffnen:
  * Klicken Sie mit der rechten Maustaste auf Ihr Projekt im Solution Explorer.
  * Wählen Sie Manage NuGet Packages (NuGet-Pakete verwalten).
-3. NPOI-Paket suchen:
+3. *DAS* Paket suchen:
  * Wechseln Sie zum Tab Browse (Durchsuchen).
- * Geben Sie „NPOI“ in das Suchfeld ein.
- * Wählen Sie das NPOI-Paket aus der Liste der verfügbaren Pakete.
+ * Geben Sie den „NAMEN“ in das Suchfeld ein.
+ * Wählen Sie das Paket aus der Liste der verfügbaren Pakete.
 4. Paket installieren:
  * Klicken Sie auf Install (Installieren), um das Paket in Ihrem Projekt zu installieren.
 5. Paketinstallation überprüfen:
- * Nach der Installation sollten Sie das NPOI-Paket unter dem Tab Installed (Installierte Pakete) sehen.
+ * Nach der Installation sollten Sie das Paket unter dem Tab Installed (Installierte Pakete) sehen.
 
+Bei beiden beispielen **Schreiben** **Lesen** benötiten Sie die entsprechende Namespaces:
+```csharp
+using ClosedXML.Excel;     // Für das .xlsx-Format
+```
 
-Bei beiden beispielen **Schreiben** **Lesen** benötiten Sie die NPOI-Bibliothek. 
 ```csharp
 using NPOI.XSSF.UserModel;  // Für das .xlsx-Format
 using NPOI.SS.UserModel;   // Gemeinsame Schnittstellen für xls und xlsx
@@ -54,17 +62,19 @@ using NPOI.SS.UserModel;   // Gemeinsame Schnittstellen für xls und xlsx
 
 
 ### Write XLSX (Excel File)
-    WriteXlSX();
+	CreateExcelFileWithNPOI($"{Environment.CurrentDirectory}\\Datei.xlsx");            
 
 #### Erklärung des Codes:
-HSSFWorkbook: Erstellen Sie ein neues Arbeitsbuch für das .xls-Format.
-CreateSheet: Erstellt ein neues Arbeitsblatt.
-CreateRow und CreateCell: Diese Methoden fügen der Arbeitsmappe neue Zeilen und Zellen hinzu.
-SetCellValue: Legt den Wert einer Zelle fest, sei es Text, Zahl oder Datum.
-Write: Speichert die Arbeitsmappe in der angegebenen Datei.
+
+- HSSFWorkbook: Erstellen Sie ein neues Arbeitsbuch für das .xls-Format.
+- CreateSheet: Erstellt ein neues Arbeitsblatt.
+- CreateRow und CreateCell: Diese Methoden fügen der Arbeitsmappe neue Zeilen und Zellen hinzu.
+- SetCellValue: Legt den Wert einer Zelle fest, sei es Text, Zahl oder Datum.
+- Write: Speichert die Arbeitsmappe in der angegebenen Datei.
 
 ### Read XLSX (Excel File)
-	ReadXlSX();
+	ReadExcelFileWithClosedXML($"{Environment.CurrentDirectory}\\Datei.xlsx");-
+	ReadExcelFileWithNPOI($"{Environment.CurrentDirectory}\\Datei.xlsx");
 
 #### Erklärung des Codes:
 HSSFWorkbook: Dies ist der Hauptarbeitsbuchtyp für .xls-Dateien 
